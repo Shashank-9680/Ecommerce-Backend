@@ -12,8 +12,8 @@ const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const cookieParser = require("cookie-parser");
 const { createProduct } = require("./controller/Product");
-const productsRouter = require("./routes/Product");
-const categoriesRouter = require("./routes/Category");
+const productsRouter = require("./routes/Products");
+const categoriesRouter = require("./routes/Categories");
 const brandsRouter = require("./routes/Brands");
 const usersRouter = require("./routes/Users");
 const authRouter = require("./routes/Auth");
@@ -22,6 +22,7 @@ const ordersRouter = require("./routes/Order");
 const { User } = require("./model/User");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const endpointSecret = process.env.ENDPOINT_SECRET;
+const path = require("path");
 //webhook
 
 server.post(
@@ -64,7 +65,7 @@ opts.secretOrKey = process.env.JWT_SECRET_KEY; // TODO: should not be in code;
 
 //middlewares
 
-server.use(express.static("build"));
+server.use(express.static(path.resolve(__dirname, "build")));
 server.use(cookieParser());
 server.use(
   session({
@@ -118,7 +119,7 @@ passport.use(
             sanitizeUser(user),
             process.env.JWT_SECRET_KEY
           );
-          done(null, { id: user.id, role: user.role }); // this lines sends to serializer
+          done(null, { id: user.id, role: user.role, token }); // this lines sends to serializer
         }
       );
     } catch (err) {
