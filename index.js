@@ -11,6 +11,7 @@ const jwt = require("jsonwebtoken");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 const cookieParser = require("cookie-parser");
+
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const categoriesRouter = require("./routes/Categories");
@@ -25,6 +26,10 @@ const endpointSecret = process.env.ENDPOINT_SECRET;
 const path = require("path");
 const { Order } = require("./model/Order");
 //webhook
+//Emails
+
+
+// async..await is not allowed in global scope, must use a wrapper
 
 server.post(
   "/webhook",
@@ -94,6 +99,8 @@ server.use("/users", isAuth(), usersRouter.router);
 server.use("/auth", authRouter.router);
 server.use("/cart", isAuth(), cartRouter.router);
 server.use("/orders", isAuth(), ordersRouter.router);
+
+
 server.get("*", (req, res) =>
   res.sendFile(path.resolve("build", "index.html"))
 );
